@@ -2,7 +2,7 @@ from Globals import *
 import ActivePiece 
 class Board:
 	def __init__(self):
-		self.activePiece = ActivePiece.new()
+		self.piece = ActivePiece.new()
 		self.rowsCleared = 0
 		self.grid = [[0]*SQUARES_HORIZONTAL for i in range(SQUARES_VERTICAL)]
 		self.hasLost = False
@@ -10,13 +10,25 @@ class Board:
 	'''returns true if there is a conflict, ie either the piece is out of
 	    bounds or the piece overlaps with existing squares'''
 	def isConflict(self):
-	    for row, col in self.piece.getCoords():
-	        if (not self.inBounds( row, col )) or (row>=0 and self.grid[row][col] ==1):
-	            return True #either of bounds, or hit an overlapping square
-	    return False #each square cleared, so the fxn clears
+		for row, col in self.piece.getCoords():
+			if (not self.inBounds( row, col )) or (row>=0 and self.grid[row][col] ==1):
+				print "isConflict is true"
+				return True #either of bounds, or hit an overlapping square
+		print "isconflict is false"
+		return False #each square cleared, so the fxn clears
 
 	def inBounds(self, row, col): #true if in bounds. No restriction for being off the top of the grid, because pieces start partially past the top.
-	    return row>=0 and row < SQUARES_VERTICAL and col < SQUARES_HORIZONTAL 
+	    return row < SQUARES_VERTICAL and col>=0 and col < SQUARES_HORIZONTAL
+
+	def move(self, move):
+		if move==Moves.UP:
+			self.rotatePiece()
+		elif move==Moves.LEFT:
+			self.movePieceLeft()
+		elif move==Moves.RIGHT:
+			self.movePieceRight()
+		elif move==Moves.DOWN:
+			self.movePieceDown()
 
 	def movePieceLeft(self): ##Move the piece left if available. Else, don't move the piece.
 	    self.piece.moveLeft()
@@ -46,3 +58,10 @@ class Board:
 			self.grid[row][col] = 1
 		self.checkFill() #clear out any filled rows
 		self.piece = ActivePiece.new() 
+
+	def checkFill(self):
+		for row in range(SQUARES_VERTICAL):
+			if sum(self.grid[row])==SQUARES_HORIZONTAL:
+				del self.grid[row]
+				self.grid.insert(0, [0]*SQUARES_HORIZONTAL)
+

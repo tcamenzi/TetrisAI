@@ -70,6 +70,23 @@ class GUI:
 		yCoord = row*SQUARE_HEIGHT
 		pygame.draw.rect(window, color, (xCoord, yCoord, SQUARE_WIDTH, SQUARE_HEIGHT))
 
+	@staticmethod
+	def getMove():
+		for event in pygame.event.get():
+			if event.type==pygame.QUIT:
+				sys.exit(1)
+			if event.type == pygame.KEYDOWN:
+			    if event.key == pygame.K_LEFT: #pressed left, move left
+			        return Moves.LEFT
+			    if event.key == pygame.K_RIGHT: #pressed right, move right
+			        return Moves.RIGHT
+			    if event.key == pygame.K_UP: #pressed up, so rotate the block
+			        return Moves.UP
+			    if event.key == pygame.K_DOWN:
+			    	return Moves.DOWN 
+
+
+
 
 
 
