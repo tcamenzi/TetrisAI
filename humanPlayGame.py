@@ -1,6 +1,6 @@
 from Globals import *
 
-def playGame(Agent, GUI, GameBoard):
+def humanPlayGame(Agent, GUI, GameBoard):
 	while(True):
 		move = Agent.getMove()
 		GameBoard.move(move)

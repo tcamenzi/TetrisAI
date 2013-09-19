@@ -4,7 +4,10 @@ from time import sleep
 import ActivePiece
 from Board import Board
 from HumanAgent import HumanAgent 
-from playGame import playGame 
+from ComputerAgent import ComputerAgent 
+from humanPlayGame import humanPlayGame 
+from computerPlayGame import computerPlayGame 
+from Model import getAfterStates
 # boardState = [[0]*SQUARES_HORIZONTAL for i in range(SQUARES_VERTICAL)]
 # boardState[0][0]=1
 # activeSquares = [(0,2)]
@@ -28,10 +31,22 @@ from playGame import playGame
 
 # sleep(1)
 
-board = Board()
-agent = HumanAgent(GUI)
+# board = Board()
+# for i in range(4):
+# 	board.piece.moveDown()
+# GUI.draw(board.grid, board.piece.getCoords())
 
-playGame(agent, GUI, board)
+# for numRotations, numLeft, numRight, numDown, grid in getAfterStates(board):
+# 	print "numRotations: ", numRotations
+# 	print "numLeft: ", numLeft
+# 	print "numRight: ", numRight
+# 	print "numDown: ", numDown
+# 	GUI.draw(grid, board.piece.getCoords())
+# 	raw_input("enter to continue")
+
+# agent = HumanAgent(GUI)
+
+# playGame(agent, GUI, board)
 # board.piece.row+=5
 # for coord in board.piece.getCoords():
 #  	print coord 
@@ -55,7 +70,11 @@ playGame(agent, GUI, board)
 # 	GUI.draw(board.grid, board.piece.getCoords())
 	# sleep(1)
 
-
+board = Board()
+# humanAgent = HumanAgent(GUI)
+# humanPlayGame(humanAgent, GUI, board)
+computerAgent = ComputerAgent()
+computerPlayGame(computerAgent, GUI, board)
 
 
 

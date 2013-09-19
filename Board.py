@@ -53,7 +53,7 @@ class Board:
 
 	def hitBottom(self):
 		for row, col in self.piece.getCoords(): ##add each square to the board
-			if row<0: ##you're past the top of the board when you hit the bottom; you've filled up the board and lose.
+			if row<ROW_LOSS: ##you're past the top of the board when you hit the bottom; you've filled up the board and lose.
 			    self.hasLost = True
 			self.grid[row][col] = 1
 		self.checkFill() #clear out any filled rows
@@ -64,4 +64,6 @@ class Board:
 			if sum(self.grid[row])==SQUARES_HORIZONTAL:
 				del self.grid[row]
 				self.grid.insert(0, [0]*SQUARES_HORIZONTAL)
+
+	
 

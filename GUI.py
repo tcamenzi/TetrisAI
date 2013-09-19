@@ -4,7 +4,6 @@ import pygame
 import sys
 pygame.init()
 
-
 RED = (255,0,0)
 YELLOW = (255,255,0)
 GREEN = (0,255,0)
@@ -22,6 +21,7 @@ DISPLAY_WIDTH = SQUARE_WIDTH * SQUARES_HORIZONTAL
 BACKGROUND_COLOR = WHITE
 ACTIVE_PIECE_COLOR = RED
 PASSIVE_PIECE_COLOR = BLACK 
+LINE_COLOR = RED
 
 window = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 
@@ -43,6 +43,13 @@ class GUI:
 		GUI.checkForQuit()
 
 		window.fill(BACKGROUND_COLOR)
+
+		'''Draw the line above which you can't place
+		pieces without losing'''
+		leftx = 0
+		rightx = DISPLAY_WIDTH
+		y = ROW_LOSS*SQUARE_HEIGHT
+		pygame.draw.line(window, LINE_COLOR, (leftx, y), (rightx,y))
 
 		for row in range(SQUARES_VERTICAL):
 			for col in range(SQUARES_HORIZONTAL):
