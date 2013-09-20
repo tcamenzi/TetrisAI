@@ -70,11 +70,17 @@ from Model import getAfterStates
 # 	GUI.draw(board.grid, board.piece.getCoords())
 	# sleep(1)
 
-board = Board()
 # humanAgent = HumanAgent(GUI)
 # humanPlayGame(humanAgent, GUI, board)
+
+
 computerAgent = ComputerAgent()
-computerPlayGame(computerAgent, GUI, board)
+for i in range(100):
+	board = Board()
+	computerPlayGame(computerAgent, GUI, board)
+
+# board = Board()
+# board.grid = 
 
 
 

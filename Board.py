@@ -12,9 +12,7 @@ class Board:
 	def isConflict(self):
 		for row, col in self.piece.getCoords():
 			if (not self.inBounds( row, col )) or (row>=0 and self.grid[row][col] ==1):
-				print "isConflict is true"
 				return True #either of bounds, or hit an overlapping square
-		print "isconflict is false"
 		return False #each square cleared, so the fxn clears
 
 	def inBounds(self, row, col): #true if in bounds. No restriction for being off the top of the grid, because pieces start partially past the top.
@@ -64,6 +62,7 @@ class Board:
 			if sum(self.grid[row])==SQUARES_HORIZONTAL:
 				del self.grid[row]
 				self.grid.insert(0, [0]*SQUARES_HORIZONTAL)
+				self.rowsCleared+=1
 
 	
 

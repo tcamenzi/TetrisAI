@@ -1,7 +1,7 @@
 from Globals import *
 from time import sleep
 
-SLEEP_TIME = .5
+SLEEP_TIME = .01
 
 def computerPlayGame(ComputerAgent, GUI, GameBoard):
 	done = False
@@ -18,3 +18,4 @@ def computerPlayGame(ComputerAgent, GUI, GameBoard):
 				break
 
 	print "you have lost!!!"
+	print "you have cleared ", GameBoard.rowsCleared, "rows!!"

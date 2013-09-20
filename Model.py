@@ -93,7 +93,24 @@ def getMoveDown(board, activePiece):
 	for row, col in activePiece.getCoords():
 		board.grid[row][col]=1
 
+	'''Check for filled rows'''
+	filledRowIndexes = []
+	for rowindex in range(SQUARES_VERTICAL):
+		if sum(board.grid[rowindex])==SQUARES_HORIZONTAL:
+			filledRowIndexes.append(rowindex)
+
+	'''Remove filled rows'''
+	for filledIndex in filledRowIndexes:
+		del board.grid[filledIndex]
+		board.grid.insert(0, [0]*SQUARES_HORIZONTAL)
+
+
 	yield (movesDown, board.grid)
+
+	'''Add back in filled rows'''
+	for filledIndex in filledRowIndexes[::-1]:
+		del board.grid[0]
+		board.grid.insert(filledIndex, [1]*SQUARES_HORIZONTAL)
 
 	'''remove from board'''
 	for row, col in activePiece.getCoords():
