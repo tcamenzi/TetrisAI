@@ -17,10 +17,11 @@ class ComputerAgent:
 		self.featureWeights = self.getInitialFeatureWeights()
 		self.features = set(self.featureWeights.keys())
 		self.numMoves = 1000
-		self.initialAlpha = .0001
+		self.initialAlpha = 0#.01
 		self.alpha = self.initialAlpha/(self.numMoves**.5)
 		self.initialEpsilon = 1
 		self.epsilon = self.initialEpsilon / (self.numMoves**.5)
+		self.discount = .5
 		self.previousFeatureValues = self.getStartFeatureValues()
 		self.previousScore = 0
 		self.firstMove = True #first move of game. debugging only.
@@ -29,17 +30,17 @@ class ComputerAgent:
 		featureValues = {}
 		for feature in self.features:
 			featureValues[feature] = 0
-		featureValues['BASE_VALUE'] = 1000 #initial board 0 all features, except base is 1
+		featureValues['BASE_VALUE'] = 1 #initial board 0 all features, except base is 1
 		return featureValues 
 
 	def getInitialFeatureWeights(self):
 		featureWeights = {}
-		featureWeights['BASE_VALUE'] = 10
-		featureWeights['BURIED_SQUARES'] = -1
-		featureWeights['SURFACE_VARIATION'] = -.2
-		# featureWeights['AVERAGE_HEIGHT'] = 0
-		# featureWeights['TRENCHES_DEPTHS'] = 0
-		# featureWeights['UNBURY_DISTANCE'] = 0
+		featureWeights['BASE_VALUE'] = 0
+		featureWeights['BURIED_SQUARES'] = -20
+		featureWeights['SURFACE_VARIATION'] = -1
+		featureWeights['AVERAGE_HEIGHT'] = -.2
+		featureWeights['TRENCHES_DEPTHS'] = -1
+		featureWeights['UNBURY_DISTANCE'] = -1
 		return featureWeights
 
 	def getMoves(self, board):
@@ -73,7 +74,7 @@ class ComputerAgent:
 			print ""
 			print "bestScore: ", 0
 			print "prev score: ", self.previousScore
-			print "error: ", 0 - self.previousScore 
+			print "error: ", error
 			# print ""
 			# print "FEATURE VALUES:"
 			# for feature in bestFeatures:
@@ -90,14 +91,14 @@ class ComputerAgent:
 			return None 
 
 		#print featues
-		if self.numMoves %100==0 or self.firstMove:
+		if self.numMoves %1==0 or self.firstMove:
 			if self.firstMove:
 				print "FIRST MOVE OF THE GAME!!!!!"
 
 			print ""
 			print "bestScore: ", bestScore
 			print "prev score: ", self.previousScore
-			print "error: ", 1+bestScore - self.previousScore 
+			print "error: ", REWARD_PER_MOVE+self.discount*bestScore - self.previousScore 
 			print ""
 			print "FEATURE VALUES:"
 			for feature in bestFeatures:
@@ -133,7 +134,7 @@ class ComputerAgent:
 
 
 		'''Learning goes here'''
-		error = REWARD_PER_MOVE + bestScore - self.previousScore
+		error = REWARD_PER_MOVE + self.discount*bestScore - self.previousScore
 		self.updateFeatureWeights(error)
 		self.previousScore = bestScore
 		self.previousFeatureValues = bestFeatures

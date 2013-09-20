@@ -1,12 +1,12 @@
 from Globals import *
 
-HEIGHT_NORMALIZATION = .005
-SURFACE_VARIATION_NORMALIZATION = .1
+HEIGHT_NORMALIZATION = 1
+SURFACE_VARIATION_NORMALIZATION = 1
 
 '''Feature value is always 1; basically adds in a constant to our linear fxn
 so we have a base score approximation, ie for a blank grid.'''
 def getBaseValue(grid):
-	return 1000
+	return 1
 
 	
 '''Return the number of 'buried' squares, that is

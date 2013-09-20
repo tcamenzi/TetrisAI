@@ -1,7 +1,7 @@
 from Globals import *
 from time import sleep
 
-SLEEP_TIME = 0
+SLEEP_TIME = .01
 
 def computerPlayGame(ComputerAgent, GUI, GameBoard):
 	done = False
