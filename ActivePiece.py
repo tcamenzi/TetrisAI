@@ -73,7 +73,7 @@ class Square(ActivePiece):
 class LeftS(ActivePiece):
 	def __init__(self):
 		ActivePiece.__init__(self)
-		self.numRotations = 4
+		self.numRotations = 2
 		self.relativePoints = [
 			[0,0],
 			[0,1],
@@ -84,7 +84,7 @@ class LeftS(ActivePiece):
 class RightS(ActivePiece):
 	def __init__(self):
 		ActivePiece.__init__(self)
-		self.numRotations = 4
+		self.numRotations = 2
 		self.relativePoints = [
 			[0,0],
 			[0,1],

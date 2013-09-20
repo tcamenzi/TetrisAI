@@ -1,4 +1,5 @@
-from GUI import GUI
+# from GUI import GUI
+from FakeGui import FakeGui
 from Globals import *
 from time import sleep
 import ActivePiece
@@ -77,7 +78,7 @@ from Model import getAfterStates
 computerAgent = ComputerAgent()
 for i in range(100):
 	board = Board()
-	computerPlayGame(computerAgent, GUI, board)
+	computerPlayGame(computerAgent, FakeGui, board)
 
 # board = Board()
 # board.grid = 

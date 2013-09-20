@@ -5,6 +5,7 @@ from FeatureExtraction import *
 class ComputerAgent:
 
 	FEATURE_VALUE_FUNCTION = {
+		'BASE_VALUE':getBaseValue,
 		'BURIED_SQUARES':getNumBuried,
 		'SURFACE_VARIATION':getSurfaceVariation,
 		'AVERAGE_HEIGHT':getAverageHeight,
@@ -15,31 +16,36 @@ class ComputerAgent:
 	def __init__(self):
 		self.featureWeights = self.getInitialFeatureWeights()
 		self.features = set(self.featureWeights.keys())
-		self.numMoves = 10
-		self.initialAlpha = 0
-		self.alpha = self.initialAlpha/(self.numMoves**.2)
-		self.previousFeatureValues = self.getZeroFeatureValues()
+		self.numMoves = 1000
+		self.initialAlpha = .0001
+		self.alpha = self.initialAlpha/(self.numMoves**.5)
+		self.initialEpsilon = 1
+		self.epsilon = self.initialEpsilon / (self.numMoves**.5)
+		self.previousFeatureValues = self.getStartFeatureValues()
 		self.previousScore = 0
+		self.firstMove = True #first move of game. debugging only.
 
-	def getZeroFeatureValues(self):
+	def getStartFeatureValues(self):
 		featureValues = {}
 		for feature in self.features:
 			featureValues[feature] = 0
+		featureValues['BASE_VALUE'] = 1000 #initial board 0 all features, except base is 1
 		return featureValues 
 
 	def getInitialFeatureWeights(self):
 		featureWeights = {}
-		featureWeights['BURIED_SQUARES'] = -20
-		featureWeights['SURFACE_VARIATION'] = -1
-		featureWeights['AVERAGE_HEIGHT'] = 0
-		featureWeights['TRENCHES_DEPTHS'] = -1
-		featureWeights['UNBURY_DISTANCE'] = -1
+		featureWeights['BASE_VALUE'] = 10
+		featureWeights['BURIED_SQUARES'] = -1
+		featureWeights['SURFACE_VARIATION'] = -.2
+		# featureWeights['AVERAGE_HEIGHT'] = 0
+		# featureWeights['TRENCHES_DEPTHS'] = 0
+		# featureWeights['UNBURY_DISTANCE'] = 0
 		return featureWeights
 
 	def getMoves(self, board):
-
 		self.numMoves += 1
-		self.alpha = self.initialAlpha/(self.numMoves**.2)
+		self.alpha = self.initialAlpha/(self.numMoves**.5)
+		self.epsilon = self.initialEpsilon / (self.numMoves**.5)
 
 		bestMoves = None
 		bestFeatures = None 
@@ -55,26 +61,43 @@ class ComputerAgent:
 				bestFeatures = currFeatures 
 				bestMoves = afterState[:4]
 
-		print "bestScore: ", bestScore 
 
 
 		if bestMoves==None: #no possible moves, you've lost: end state value is REWARD_ON_LOSS/numRowsCleared (negative)
-			episodeReward = REWARD_ON_LOSS / (board.rowsCleared+1)
+			self.firstMove = True 
+			episodeReward = REWARD_ON_LOSS #0
 			error = episodeReward - self.previousScore 
 			self.updateFeatureWeights(error)
 
+			print 'YOU JUST LOST!!!'
+			print ""
+			print "bestScore: ", 0
+			print "prev score: ", self.previousScore
+			print "error: ", 0 - self.previousScore 
+			# print ""
+			# print "FEATURE VALUES:"
+			# for feature in bestFeatures:
+			# 	print feature, bestFeatures[feature]
 			print ""
 			print "FEATURE WEIGHTS"
 			for feature in self.featureWeights:
 				print feature, self.featureWeights[feature]
 
 			'''Reset to initial values'''
-			self.previousScore = 0
-			self.previousFeatureValues = self.getZeroFeatureValues()
+			# self.previousScore = 0
+			self.previousFeatureValues = self.getStartFeatureValues()
+			self.previousScore = self.featureWeights['BASE_VALUE']
 			return None 
 
 		#print featues
-		if self.numMoves %100==0:
+		if self.numMoves %100==0 or self.firstMove:
+			if self.firstMove:
+				print "FIRST MOVE OF THE GAME!!!!!"
+
+			print ""
+			print "bestScore: ", bestScore
+			print "prev score: ", self.previousScore
+			print "error: ", 1+bestScore - self.previousScore 
 			print ""
 			print "FEATURE VALUES:"
 			for feature in bestFeatures:
@@ -89,6 +112,7 @@ class ComputerAgent:
 
 			print "num rows cleared: "
 			print board.rowsCleared 
+		self.firstMove = False 
 		moveSequence = []
 
 		'''Take numRotations, numLeft, numRight, numDown
@@ -109,7 +133,7 @@ class ComputerAgent:
 
 
 		'''Learning goes here'''
-		error = bestScore - self.previousScore
+		error = REWARD_PER_MOVE + bestScore - self.previousScore
 		self.updateFeatureWeights(error)
 		self.previousScore = bestScore
 		self.previousFeatureValues = bestFeatures
@@ -123,26 +147,30 @@ class ComputerAgent:
 			update = coefficient*gradient 
 			self.featureWeights[feature]+=update
 
-		self.normalizeFeatureWeights()
+		# self.normalizeFeatureWeights()
 
-	'''So they don't grow unbounded, normalize 
-	back to 1.'''
-	def normalizeFeatureWeights(self):
-		return 
-		total = 0
-		for feature in self.features:
-			total+=self.featureWeights[feature]**2
-		total=(total**.5) #the 2-norm
+	# '''So they don't grow unbounded, normalize 
+	# back to 1.'''
+	# def normalizeFeatureWeights(self):
+	# 	return 
+	# 	total = 0
+	# 	for feature in self.features:
+	# 		total+=self.featureWeights[feature]**2
+	# 	total=(total**.5) #the 2-norm
 
-		if total==0:
-			return 
+	# 	if total==0:
+	# 		return 
 
-		for feature in self.features:
-			self.featureWeights[feature]/=total
+	# 	for feature in self.features:
+	# 		self.featureWeights[feature]/=total
 
 
 
 	def score(self, grid):
+
+		for row in grid:
+			assert (sum(row)!=SQUARES_HORIZONTAL) #all filled
+
 		featureValues = self.getFeatureValues(grid)
 
 		score = 0
